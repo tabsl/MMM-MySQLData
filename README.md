@@ -6,12 +6,12 @@ A [MagicMirror²](https://magicmirror.builders) module to connect to a MySQL dat
 
 ## Installation
 
-Run these commands at the root of your MagicMirror² install:
+Run these commands at the root of your MagicMirror² installation folder.
 
 ```shell
 cd modules
 git clone https://github.com/tabsl/MMM-MySQLData.git
-cd MMM-MySqlDATA
+cd MMM-MySQLData
 npm install
 cd ../..
 ```
@@ -19,10 +19,10 @@ cd ../..
 
 ## Update
 
-If you already have a version of MMM-MySqlDATA, run the following to pick up new code changes:
+If you already have a version of MMM-MySQLData, run the following to pick up the latest code.
 
 ```shell
-cd modules/MMM-MySqlDATA
+cd modules/MMM-MySQLData
 git pull
 npm install
 ```
@@ -30,7 +30,7 @@ npm install
 
 ## Using the module
 
-Edit your `config/config.js` file and add a new object to the `modules` array like any other module:
+Edit your `config/config.js` file and add a new object to the `modules` array like any other module.
 
 ```js
 var config = {
