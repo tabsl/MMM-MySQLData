@@ -10,7 +10,7 @@ Run these commands at the root of your MagicMirror² install:
 
 ```shell
 cd modules
-git clone https://github.com/tabsl/MMM-MySqlDATA
+git clone https://github.com/tabsl/MMM-MySQLData.git
 cd MMM-MySqlDATA
 npm install
 cd ../..
