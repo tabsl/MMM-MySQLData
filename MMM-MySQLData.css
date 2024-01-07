@@ -1,0 +1,19 @@
+.MMM-MySQLData .wrapper {
+    margin-bottom: 30px;
+}
+
+.MMM-MySQLData .module-header {
+}
+
+.MMM-MySQLData .module-content {
+    font-size: 30px;
+    color: #fff;
+}
+
+.MMM-MySQLData .module-content .alert {
+    color: red;
+}
+
+.MMM-MySQLData .module-content .warn {
+    color: orange;
+}

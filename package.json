@@ -1,0 +1,20 @@
+{
+  "name": "MMM-MySQLData",
+  "version": "1.0.0",
+  "description": "MagicMirror² module to connect to a MySQL database.",
+  "main": "",
+  "author": "Tobias Merkl",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tabsl/MMM-MySQLData"
+  },
+  "keywords": [
+    "MagicMirror",
+    "module",
+    "mysql"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
