@@ -99,7 +99,21 @@ Module.register("MMM-MySQLData", {
         contentElement.innerHTML = data.value;
         contentElement.className = "module-content";
         for (let style in data.styles) {
-            if (parseFloat(data.rawValue) > parseFloat(data.styles[style])) {
+            var $segments = data.styles[style].split(/\s+/);
+            var operator = $segments[0];
+            var leftOperand = parseFloat(data.rawValue);
+            var rightOperand = parseFloat($segments[1]);
+            var operators = {
+                '==': (a, b) => a == b,
+                '===': (a, b) => a === b,
+                '>': (a, b) => a > b,
+                '<': (a, b) => a < b,
+                '>=': (a, b) => a >= b,
+                '<=': (a, b) => a <= b,
+                '!=': (a, b) => a != b,
+                '!==': (a, b) => a !== b
+            };
+            if (operators[operator] && operators[operator](leftOperand, rightOperand)) {
                 contentElement.classList.add(style);
             }
         }

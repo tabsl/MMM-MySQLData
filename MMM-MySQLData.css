@@ -10,10 +10,15 @@
     color: #fff;
 }
 
-.MMM-MySQLData .module-content .alert {
-    color: red;
+.MMM-MySQLData .module-content .ok {
+    color: green;
 }
 
 .MMM-MySQLData .module-content .warn {
     color: orange;
 }
+
+.MMM-MySQLData .module-content .alert {
+    color: red;
+}
+

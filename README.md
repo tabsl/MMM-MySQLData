@@ -19,7 +19,7 @@ cd ../..
 
 ## Update
 
-If you already have a version of MMM-MySQLData, run the following to pick up the latest code.
+If you already have a version of MMM-MySQLData, run the following to pick up the latest code ([Changelog](CHANGELOG.md)).
 
 ```shell
 cd modules/MMM-MySQLData
@@ -54,8 +54,9 @@ var config = {
                         "suffix": " w",
                         "query": "SELECT round(data) AS value FROM power_consumption WHERE type = 'current' ORDER BY date DESC LIMIT 1",
                         "styles": {
-                            "warn": "1000",
-                            "alert": "10000"
+                            "ok": "< 100",
+                            "warn": "> 1000",
+                            "alert": ">= 10000"
                         }
                     },
                     {
@@ -75,25 +76,25 @@ var config = {
 
 ## Configuration options
 
-| **Option**                  | **Type** | **Required** | **Description**                                                            |
-|-----------------------------|----------|--------------|----------------------------------------------------------------------------|
-| `id`                        | string   | yes          | Unique module instance id. Important if you use multiple module instances. |
-| `host`                      | string   | yes          | Database host                                                              |
-| `username`                  | string   | yes          | Database username                                                          |
-| `password`                  | string   | yes          | Database password                                                          |
-| `database`                  | string   | yes          | Database name                                                              |
-| `port`                      | number   | no           | Database port (default: 3306)                                              |
-| `header`                    | string   | no           | Module header                                                              |
-| `values`                    | array    | yes          | Array for each database value to display                                   |
-| `values[n].id`              | string   | yes          | Id (div)                                                                   |
-| `values[n].interval`        | number   | yes          | Update interval (milliseconds)                                             |
-| `values[n].title`           | string   | no           | Value header                                                               |
-| `values[n].praefix`         | string   | no           | Value praefix                                                              |
-| `values[n].suffix`          | string   | no           | Value suffix                                                               |
-| `values[n].query`           | string   | yes          | MySQL query. **As a result, the column `value` must be returned!**         |
-| `values[n].styles`          | array    | no           | Array for css styles                                                       |
-| `values[n].styles[n].key`   | string   | no           | Css class name                                                             |
-| `values[n].styles[n].value` | string   | no           | If database value greater then styles value, class is added.               |
+| **Option**                  | **Type** | **Required** | **Description**                                                                                                                                        |
+|-----------------------------|----------|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                        | string   | yes          | Unique module instance id. Important if you use multiple module instances.                                                                             |
+| `host`                      | string   | yes          | Database host                                                                                                                                          |
+| `username`                  | string   | yes          | Database username                                                                                                                                      |
+| `password`                  | string   | yes          | Database password                                                                                                                                      |
+| `database`                  | string   | yes          | Database name                                                                                                                                          |
+| `port`                      | number   | no           | Database port (default: 3306)                                                                                                                          |
+| `header`                    | string   | no           | Module header                                                                                                                                          |
+| `values`                    | array    | yes          | Array for each database value to display                                                                                                               |
+| `values[n].id`              | string   | yes          | Id (div)                                                                                                                                               |
+| `values[n].interval`        | number   | yes          | Update interval (milliseconds)                                                                                                                         |
+| `values[n].title`           | string   | no           | Value header                                                                                                                                           |
+| `values[n].praefix`         | string   | no           | Value praefix                                                                                                                                          |
+| `values[n].suffix`          | string   | no           | Value suffix                                                                                                                                           |
+| `values[n].query`           | string   | yes          | MySQL query. **As a result, the column `value` must be returned!**                                                                                     |
+| `values[n].styles`          | array    | no           | Array for css styles                                                                                                                                   |
+| `values[n].styles[n].key`   | string   | no           | Css class name                                                                                                                                         |
+| `values[n].styles[n].value` | string   | no           | Operator and compare value, separated by a space. If true, css class will be added. Possible operators: `==`, `===`, `>`, `<`, `>=`, `<=`, `!=`, `!==` |
 
 ## Styling
 
