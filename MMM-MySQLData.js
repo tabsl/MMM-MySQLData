@@ -55,6 +55,12 @@ Module.register("MMM-MySQLData", {
 		if (notification === "DATA_RESULT" && payload.instance === this.config.id) {
 			this.processData(payload);
 		}
+		if (notification === "NOTIFICATION") {
+			this.sendNotification('SHOW_ALERT', {type: 'notification', title: payload.title, message: payload.content})
+		}
+		if (notification === "NOTIFICATION_ALERT") {
+			this.sendNotification('SHOW_ALERT', {title: payload.title, message: payload.content})
+		}
 	},
 
 	processData: function (data) {
@@ -100,11 +106,16 @@ Module.register("MMM-MySQLData", {
 	updateContent: function (contentElement, data) {
 		contentElement.innerHTML = data.value;
 		contentElement.className = "module-content";
+
 		for (let style in data.styles) {
 			var $segments = data.styles[style].split(/\s+/);
 			var operator = $segments[0];
-			var leftOperand = parseFloat(data.rawValue);
-			var rightOperand = parseFloat($segments[1]);
+			var leftOperand = data.rawValue;
+			var rightOperand = $segments[1];
+			if (!isNaN(parseFloat(leftOperand)) && !isNaN(parseFloat(rightOperand))) {
+				leftOperand = parseFloat(leftOperand);
+				rightOperand = parseFloat(rightOperand);
+			}
 			var operators = {
 				'==': (a, b) => a == b,
 				'===': (a, b) => a === b,
@@ -120,6 +131,7 @@ Module.register("MMM-MySQLData", {
 			}
 		}
 	},
+
 
 	getDom: function () {
 		var container = document.createElement("div");
