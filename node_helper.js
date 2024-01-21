@@ -8,65 +8,77 @@ module.exports = NodeHelper.create({
 	socketNotificationReceived: function (notification, payload) {
 		if (notification === "SET_CONFIG") {
 			this.config = payload.config;
-			this.connection = mysql.createConnection({
+
+			this.pool = mysql.createPool({
+				connectionLimit: 10,
+				connectTimeout: 20000,
 				host: this.config.host,
 				port: this.config.port,
 				user: this.config.username,
 				password: this.config.password,
 				database: this.config.database,
 			});
-			this.connection.connect(function (error) {
-				if (error) {
-					console.error("Database connection error:", error.stack);
-					self.sendSocketNotification("NOTIFICATION_ALERT", {
-						title: "DATABASE CONNECTION ERROR",
-						content: error.message
-					});
-					return;
-				}
-			});
 		}
 		if (notification === "GET_DATA") {
 			this.getData(payload);
 		}
 	},
-
 	getData: function (payload) {
 		var self = this;
 		var data = payload.config;
-		this.connection.query(data.query, function (error, results, fields) {
-			if (error) {
-				console.error("Database query error:", error);
+
+		this.pool.getConnection(function (err, connection) {
+			if (err) {
+				console.error("MMM-MySQLData connection error:", err);
 				self.sendSocketNotification("NOTIFICATION_ALERT", {
-					title: "DATABASE QUERY ERROR",
-					content: error.message + ' [' + data.query + ']'
+					title: "DATABASE CONNECTION ERROR",
+					content: err.message
 				});
 				return;
 			}
-			if (results.length > 0) {
-				var value = '';
-				if (data.praefix) {
-					value += '<span class="praefix">' + data.praefix + '</span>';
+			connection.query(data.query, function (error, results, fields) {
+				connection.release();
+				if (self.config.debug) {
+					console.log("MMM-MySQLData query: " + data.query);
 				}
-				value += '<span class="value">' + results[0].value + '</span>';
-				if (data.suffix) {
-					value += '<span class="suffix">' + data.suffix + '</span>';
+				if (error) {
+					console.error("MMM-MySQLData query error: ", error);
+					self.sendSocketNotification("NOTIFICATION_ALERT", {
+						title: "DATABASE QUERY ERROR",
+						content: error.message + ' [' + data.query + ']'
+					});
+					return;
 				}
-				self.sendSocketNotification("DATA_RESULT", {
-					instance: payload.id,
-					id: data.id,
-					title: data.title,
-					value: value,
-					rawValue: results[0].value,
-					styles: data.styles
-				});
-			} else {
-				console.log("No data found");
-			}
+				if (results.length > 0) {
+					if (self.config.debug) {
+						console.log("MMM-MySQLData query result: " + results[0].value);
+					}
+					var value = '';
+					if (data.praefix) {
+						value += '<span class="praefix">' + data.praefix + '</span>';
+					}
+					value += '<span class="value">' + results[0].value + '</span>';
+					if (data.suffix) {
+						value += '<span class="suffix">' + data.suffix + '</span>';
+					}
+					self.sendSocketNotification("DATA_RESULT", {
+						instance: payload.id,
+						id: data.id,
+						index: data.index,
+						title: data.title,
+						value: value,
+						rawValue: results[0].value,
+						styles: data.styles
+					});
+				} else {
+					console.log("MMM-MySQLData query: no data");
+				}
+			});
 		});
 	},
 
 	stop: function () {
-		this.connection.end();
+		this.pool.end(function (err) {
+		});
 	}
 });

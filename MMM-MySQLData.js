@@ -1,6 +1,8 @@
 Module.register("MMM-MySQLData", {
 	defaults: {
 		id: 1,
+		debug: true,
+		wait: 0,
 		host: "",
 		port: 3306,
 		username: "",
@@ -9,6 +11,7 @@ Module.register("MMM-MySQLData", {
 		values: [
 			{
 				"id": "",
+				"index": "",
 				"title": "",
 				"suffix": "",
 				"prefix": "",
@@ -18,6 +21,7 @@ Module.register("MMM-MySQLData", {
 		],
 		data: {
 			"id": "",
+			"index": "",
 			"title": "",
 			"value": "",
 			"rawValue": "",
@@ -30,14 +34,18 @@ Module.register("MMM-MySQLData", {
 	},
 
 	start: function () {
-		this.sendSocketNotification("SET_CONFIG", {
-			config: this.config
-		});
-		this.getDbData();
+		this.dataQueue = [];
+		setTimeout(() => {
+			this.sendSocketNotification("SET_CONFIG", {
+				config: this.config
+			});
+			this.getDbData();
+		}, this.config.wait);
 	},
 
 	getDbData() {
-		for (let data of this.config.values) {
+		Object.entries(this.config.values).forEach(([key, data], index) => {
+			data.index = index;
 			this.sendSocketNotification("GET_DATA", {
 				id: this.config.id,
 				config: data
@@ -48,12 +56,14 @@ Module.register("MMM-MySQLData", {
 					config: data
 				});
 			}, data.interval);
-		}
+		});
+		this.config.dataQueueTotal = this.config.values.length;
 	},
 
 	socketNotificationReceived: function (notification, payload) {
 		if (notification === "DATA_RESULT" && payload.instance === this.config.id) {
-			this.processData(payload);
+			this.dataQueue.push(payload);
+			this.processDataQueue();
 		}
 		if (notification === "NOTIFICATION") {
 			this.sendNotification('SHOW_ALERT', {type: 'notification', title: payload.title, message: payload.content})
@@ -63,11 +73,28 @@ Module.register("MMM-MySQLData", {
 		}
 	},
 
+	processDataQueue: function () {
+		this.dataQueue.sort((a, b) => a.index - b.index);
+		if (this.config.dataQueueTotal == 0 || (this.config.dataQueueTotal > 0 && this.dataQueue.length == this.config.dataQueueTotal)) {
+			this.dataQueue.forEach(data => {
+				this.processData(data);
+			});
+			this.dataQueue = [];
+			this.config.dataQueueTotal = 0;
+		}
+	},
+
 	processData: function (data) {
-		console.log(data);
+		if (this.config.debug) {
+			console.log("MMM-MySQLData data:");
+			console.log(data);
+		}
 		if (data) {
 			this.createOrUpdateWrapper(data);
-			this.updateDom();
+			// performance dom building
+			setInterval(() => {
+				this.updateDom();
+			}, 2000);
 		}
 	},
 
@@ -131,7 +158,6 @@ Module.register("MMM-MySQLData", {
 			}
 		}
 	},
-
 
 	getDom: function () {
 		var container = document.createElement("div");

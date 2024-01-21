@@ -2,6 +2,12 @@
 
 ---
 
+## 1.3.0 - 2024-01-21
+- Improve db performance (connection pools)
+- Improve dom building performance
+- Add wait feature for loading data
+- Add debug output
+
 ## 1.2.0 - 2024-01-09
 - Improve database error handling
 - Improve style comparison (string is possible now)
