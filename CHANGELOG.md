@@ -2,6 +2,9 @@
 
 ---
 
+## 1.3.1 - 2024-05-12
+- Fix connection pools with different connections
+
 ## 1.3.0 - 2024-01-21
 - Improve db performance (connection pools)
 - Improve dom building performance

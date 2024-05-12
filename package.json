@@ -1,6 +1,6 @@
 {
   "name": "MMM-MySQLData",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "MagicMirror² module to connect to a MySQL database.",
   "main": "",
   "author": "Tobias Merkl",
